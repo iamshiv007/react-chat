@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState();
 
   const handleLogout = () => {
     signOut(auth)
@@ -27,6 +28,7 @@ const Home = () => {
         const uid = user.uid;
         // ...
         console.log("uid", uid);
+        setUser(user);
       } else {
         // User is signed out
         // ...
@@ -39,6 +41,7 @@ const Home = () => {
     <>
       <nav>
         <p>Welcome Home</p>
+        <p>{user?.email}</p>
 
         <div>
           <button onClick={handleLogout}>Logout</button>
