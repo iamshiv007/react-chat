@@ -8,7 +8,7 @@ export const createMail = (formData) => async (dispatch) => {
 
     try {
         const { data } = await axios.post(
-            "http://mern-chat-q4gt.onrender.com/api/mail/new", formData
+            "https://mern-chat-q4gt.onrender.com/api/mail/new", formData
         );
 
         dispatch(newMailSuccess(data));
