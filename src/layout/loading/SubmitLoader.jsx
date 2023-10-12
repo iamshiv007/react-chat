@@ -5,12 +5,12 @@ const SubmitLoader = () => {
   return (
     <div
       className={
-        "min-h-screen bg-gray-200 flex justify-center items-center fixed top-0 left-0"
+        "min-h-screen w-screen bg-[#7e7d7d4f] flex justify-center items-center fixed top-0 left-0 z-10"
       }
     >
       <svg
         className='animate-spin'
-        fill='#000000'
+        fill='black'
         width='44px'
         height='44px'
         viewBox='-1.5 0 19 19'

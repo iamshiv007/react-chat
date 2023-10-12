@@ -10,7 +10,7 @@ const Loader = ({ height }) => {
     >
       <svg
         className='animate-spin'
-        fill='#000000'
+        fill='black'
         width='44px'
         height='44px'
         viewBox='-1.5 0 19 19'
