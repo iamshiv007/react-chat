@@ -6,8 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://mern-chat-q4gt.onrender.com/',
+      '/api': {
+        target: 'https://mern-chat-q4gt.onrender.com',
+        changeOrigin: true,
+        // rewrite: (path) => path.replace(/^\/api/, ''),
+      }
     },
-    secure: true
   },
 })
