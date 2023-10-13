@@ -1,7 +1,6 @@
 {
   "name": "mern-chat-app",
   "private": true,
-  "proxy": "https://mern-chat-q4gt.onrender.com",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

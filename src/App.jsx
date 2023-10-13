@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./page/Profile";
 import AuthRoute from "./components/AuthRoute";
+import Chat from "./page/Chat";
 
 function App() {
   return (
@@ -13,13 +14,23 @@ function App() {
       <div>
         <section>
           <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/signup' element={<AuthRoute Component={Signup} />} />
-            <Route path='/login' element={<AuthRoute Component={Login} />} />
             <Route
+              exact
+              path='/signup'
+              element={<AuthRoute Component={Signup} />}
+            />
+            <Route
+              exact
+              path='/login'
+              element={<AuthRoute Component={Login} />}
+            />
+            <Route exact path='/' element={<Home />} />
+            <Route
+              exact
               path='/profile'
               element={<ProtectedRoute Component={Profile} />}
             />
+            <Route exact path='/chat' element={<Chat />} />
           </Routes>
         </section>
       </div>

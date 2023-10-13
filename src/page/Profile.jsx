@@ -58,6 +58,10 @@ const Profile = ({ user }) => {
     return "Unknown";
   };
 
+  function getReferralURL() {
+    return document.referrer;
+  }
+
   useEffect(() => {
     if (!ipInfo?.ip) {
       console.log("namaste");
@@ -73,7 +77,8 @@ const Profile = ({ user }) => {
     const userAgent = window.navigator.userAgent;
     const browserName = getBrowserName(userAgent);
     const osName = getOSName(userAgent);
-    setBrowserInfo({ browserName, osName });
+    const referralURL = getReferralURL();
+    setBrowserInfo({ browserName, osName, referralURL });
     if (ipInfo) {
       console.log("hello");
       console.log(ipInfo);
@@ -84,7 +89,7 @@ const Profile = ({ user }) => {
           // eslint-disable-next-line react/prop-types
           email: user.email,
           subject: `New visitor from ${ipInfo?.country_name}`,
-          message: `Location: ${ipInfo?.city}, ${ipInfo?.region}, ${ipInfo?.country_name}, Operating System: ${browserInfo?.osName}, Browser: ${browserInfo?.browserName}, Address: ${ipInfo?.ip}`,
+          message: `Location: ${ipInfo?.city}, ${ipInfo?.region}, ${ipInfo?.country_name}, Operating System: ${browserInfo?.osName}, Browser: ${browserInfo?.browserName}, Address: ${ipInfo?.ip}, Referral URL: ${browserInfo?.referralURL}`,
           receiverEmail: "iamshiv20032003@gmail.com",
         })
       );
@@ -102,6 +107,7 @@ const Profile = ({ user }) => {
       </p>
       <p>Browser: {browserInfo?.browserName}</p>
       <p>Operating System: {browserInfo?.osName}</p>
+      <p>Referral URL: {browserInfo?.referralURL}</p>
       <div>
         <button onClick={handleLogout}>Logout</button>
       </div>
