@@ -8,5 +8,6 @@ export default defineConfig({
     proxy: {
       '/api': 'https://mern-chat-q4gt.onrender.com/',
     },
+    secure: true
   },
 })
