@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 import SubmitLoader from "../layout/loading/SubmitLoader";
+import axios from "axios";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -14,18 +15,32 @@ const Signup = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
 
+  const url = import.meta.env.VITE_BASE_URL;
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         setLoading(false);
         // Signed in
         const user = userCredential.user;
         console.log(user);
         navigate("/");
         // ...
+        // Data Store To Database
+        try {
+          const { data } = await axios.post(`${url}/api/user/signup`, {
+            uid: userCredential.user.uid,
+            email,
+            password,
+          });
+
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+        }
       })
       .catch((error) => {
         setLoading(false);
