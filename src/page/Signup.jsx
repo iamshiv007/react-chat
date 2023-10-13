@@ -178,6 +178,7 @@ const Signup = () => {
               </div>
               <div className='pb-2 pt-4'>
                 <input
+                  autoComplete='new-password'
                   onChange={(e) => setPassword(e.target.value)}
                   className='block w-full p-4 text-lg rounded-sm bg-black'
                   type='password'
