@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import onlineIcon from "../icons/OnlineIcon.png";
+import onlineIcon from "../icons/onlineIcon.png";
 import "./TextContainer.css";
 
 const TextContainer = ({ users }) => {
