@@ -22,6 +22,7 @@ const Chat = () => {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [typing, setTyping] = useState({});
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -41,13 +42,11 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    console.log("hey");
     socket.on("message", (message) => {
       setMessages([...messages, message]);
     });
 
     socket.on("roomData", ({ users }) => {
-      console.log(users);
       setUsers(users);
     });
 
@@ -60,15 +59,33 @@ const Chat = () => {
   const sendMessage = (event) => {
     event.preventDefault();
     if (message) {
-      socket.emit("sendMessage", message, () => setMessage(""));
+      socket.emit("sendMessage", message, () => {
+        setMessage("");
+      });
     }
   };
+
+  useEffect(() => {
+    if (message) {
+      socket.emit("typing", true, name, room);
+    } else {
+      socket.emit("typing", false, name, room);
+    }
+
+    socket.on("typing", (status, name) => {
+      setTyping({ status: status, name });
+    });
+
+    return () => {
+      socket.off("typing");
+    };
+  }, [message, name, room]);
 
   return (
     <div className='outerContainer'>
       <div className='container'>
         <Infobar room={room} />
-        <Messages messages={messages} name={name} />
+        <Messages typing={typing} messages={messages} name={name} />
         <Input
           message={message}
           setMessage={setMessage}

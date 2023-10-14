@@ -2,7 +2,7 @@
 import React from "react";
 import Message from "../Message/Message";
 
-const Messages = ({ messages, name }) => {
+const Messages = ({ typing: { status, name: typerName }, messages, name }) => {
   return (
     <div>
       {messages.map((message, i) => (
@@ -10,6 +10,7 @@ const Messages = ({ messages, name }) => {
           <Message message={message} name={name} />
         </div>
       ))}
+      {status && <p style={{ color: "white" }}>{typerName} is typing ...✏️</p>}
     </div>
   );
 };
