@@ -1,43 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
 import Loader from "../layout/loading/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserDetails } from "../redux/actions/userActions";
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ Component }) => {
-  const [user, setUser] = useState();
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user, userLoading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   useEffect(() => {
-    setLoading(true);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoading(false);
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const uid = user.uid;
-        // ...
-        console.log("uid", uid);
-        setUser(user);
-      } else {
-        setLoading(false);
-        // User is signed out
-        // ...
-        console.log("user is logged out");
-      }
-    });
-  }, []);
+    dispatch(getUserDetails());
+  }, [dispatch]);
 
   useEffect(() => {
     // Use a separate useEffect to handle navigation after rendering.
-    if (!loading && !user?.email) {
-      navigate("/");
+    if (!userLoading && !isAuthenticated) {
+      navigate("/login");
     }
   });
 
-  return loading || !user?.email ? <Loader /> : <Component user={user} />;
+  return userLoading || !isAuthenticated ? (
+    <Loader />
+  ) : (
+    <Component user={user} />
+  );
 };
 
 export default ProtectedRoute;

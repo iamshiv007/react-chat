@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { createMail } from "../redux/actions/mailActions";
+import { useDispatch, useSelector } from "react-redux";
+// import { createMail } from "../redux/actions/mailActions";
+import { logout } from "../redux/actions/userActions";
+import SubmitLoader from "../layout/loading/SubmitLoader";
 
 // eslint-disable-next-line react/prop-types
 const Profile = ({ user }) => {
   const [browserInfo, setBrowserInfo] = useState(null);
   const [ipInfo, setIpInfo] = useState();
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
+  const { logoutLoading, isAuthenticated } = useSelector((state) => state.user);
 
   const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        navigate("/");
-        console.log("Signed out successfully");
-        alert("Logged out successfully");
-      })
-      .catch((error) => {
-        // An error happened
-        console.log(error);
-      });
+    dispatch(logout());
   };
 
   const fetchIpApi = async () => {
@@ -64,12 +56,14 @@ const Profile = ({ user }) => {
 
   useEffect(() => {
     if (!ipInfo?.ip) {
-      console.log("namaste");
-      console.log(ipInfo);
       fetchIpApi();
     }
+
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     console.log("hello2");
@@ -82,36 +76,40 @@ const Profile = ({ user }) => {
     if (ipInfo) {
       console.log("hello");
       console.log(ipInfo);
-      dispatch(
-        createMail({
-          // eslint-disable-next-line react/prop-types
-          name: user.displayName || user.email,
-          // eslint-disable-next-line react/prop-types
-          email: user.email,
-          subject: `New visitor from ${ipInfo?.country_name}`,
-          message: `Location: ${ipInfo?.city}, ${ipInfo?.region}, ${ipInfo?.country_name}, Operating System: ${browserInfo?.osName}, Browser: ${browserInfo?.browserName}, Address: ${ipInfo?.ip}, Referral URL: ${browserInfo?.referralURL}`,
-          receiverEmail: "iamshiv20032003@gmail.com",
-        })
-      );
+      // dispatch(
+      //   createMail({
+      //     // eslint-disable-next-line react/prop-types
+      //     name: user.displayName || user.email,
+      //     // eslint-disable-next-line react/prop-types
+      //     email: user.email,
+      //     subject: `New visitor from ${ipInfo?.country_name}`,
+      //     message: `Location: ${ipInfo?.city}, ${ipInfo?.region}, ${ipInfo?.country_name}, Operating System: ${browserInfo?.osName}, Browser: ${browserInfo?.browserName}, Address: ${ipInfo?.ip}, Referral URL: ${browserInfo?.referralURL}`,
+      //     receiverEmail: "iamshiv20032003@gmail.com",
+      //   })
+      // );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipInfo]);
 
   return (
-    <div>
-      {/* eslint-disable-next-line react/prop-types */}
-      <p>{user?.email}</p>
-      <p>Your IP Address: {ipInfo?.ip}</p>
-      <p>
-        Your Location: {ipInfo?.city}, {ipInfo?.region}, {ipInfo?.country_name}
-      </p>
-      <p>Browser: {browserInfo?.browserName}</p>
-      <p>Operating System: {browserInfo?.osName}</p>
-      <p>Referral URL: {browserInfo?.referralURL}</p>
+    <>
+      {logoutLoading && <SubmitLoader />}
       <div>
-        <button onClick={handleLogout}>Logout</button>
+        {/* eslint-disable-next-line react/prop-types */}
+        <p>{user?.email}</p>
+        <p>Your IP Address: {ipInfo?.ip}</p>
+        <p>
+          Your Location: {ipInfo?.city}, {ipInfo?.region},{" "}
+          {ipInfo?.country_name}
+        </p>
+        <p>Browser: {browserInfo?.browserName}</p>
+        <p>Operating System: {browserInfo?.osName}</p>
+        <p>Referral URL: {browserInfo?.referralURL}</p>
+        <div>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
