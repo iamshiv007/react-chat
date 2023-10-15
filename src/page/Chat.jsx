@@ -1,10 +1,97 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+import React, { useEffect, useState } from "react";
+import { socket } from "../socket";
+import { ConnectionState } from "../components/ConnectionState";
 
-const Chat = () => {
+const Chat = ({ user }) => {
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [receiverId, setReceiverId] = useState();
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const sendMessage = () => {
+    if (!receiverId) {
+      return alert("Please select a user to start chating");
+    }
+    setMessages([...messages, { senderId: user.uid, receiverId, message }]);
+    socket.emit("privateMessage", user.uid, receiverId, message, () => {
+      setMessage("");
+    });
+  };
+
+  useEffect(() => {
+    // no-op if the socket is already connected
+    socket.connect();
+    console.log("hello");
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.emit("new-user-add", user.uid);
+    socket.on("get-users", (users) => {
+      setOnlineUsers(users.filter((user0) => user0.userId !== user.uid));
+    });
+
+    socket.on("privateMessage", (senderId, message) => {
+      setMessages([...messages, { senderId, receiverId: user.uid, message }]);
+    });
+
+    return () => {
+      socket.off("new-user-add");
+      socket.off("get-users");
+      socket.off("privateMessage");
+    };
+  }, [user, messages]);
+
+  useEffect(() => {
+    // Tab has focus
+    // const handleFocus = async () => {
+    //   socket.emit("new-user-add", user.uid);
+    //   socket.on("get-users", (users) => {
+    //     setOnlineUsers(users);
+    //   });
+    // };
+    // // Tab closed
+    // const handleBlur = () => {
+    //   if (user) {
+    //     socket.emit("offline");
+    //   }
+    // };
+    // Track if the user changes the tab to determine when they are online
+    // window.addEventListener("focus", handleFocus);
+    // window.addEventListener("blur", handleBlur);
+    // return () => {
+    //   window.removeEventListener("focus", handleFocus);
+    //   window.removeEventListener("blur", handleBlur);
+    // };
+  }, [user]);
+
   return (
     <>
       {/* <!-- component --> */}
       {/* <!-- This is an example component --> */}
+      <ConnectionState isConnected={isConnected} />
       <div className='container mx-auto shadow-lg rounded-lg'>
         {/* <!-- headaer --> */}
         <div className='px-5 py-5 flex justify-between items-center bg-white border-b-2'>
@@ -26,7 +113,7 @@ const Chat = () => {
         {/* <!-- Chatting --> */}
         <div className='flex flex-row justify-between bg-white'>
           {/* <!-- chat list --> */}
-          <div className='flex flex-col w-2/5 border-r-2 overflow-y-auto'>
+          <div className='flex flex-col w-2/5 bo.rder-r-2 overflow-y-auto'>
             {/* <!-- search compt --> */}
             <div className='border-b-2 py-4 px-2'>
               <input
@@ -37,161 +124,80 @@ const Chat = () => {
             </div>
             {/* <!-- end search compt --> */}
             {/* <!-- user list --> */}
-            <div className='flex flex-row py-4 px-2 justify-center items-center border-b-2'>
-              <div className='w-1/4'>
-                <img
-                  src='https://source.unsplash.com/_7LbC5J-jw4/600x600'
-                  className='object-cover h-12 w-12 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='w-full'>
-                <div className='text-lg font-semibold'>Luis1994</div>
-                <span className='text-gray-500'>Pick me at 9:00 Am</span>
-              </div>
-            </div>
-            <div className='flex flex-row py-4 px-2 items-center border-b-2'>
-              <div className='w-1/4'>
-                <img
-                  src='https://source.unsplash.com/otT2199XwI8/600x600'
-                  className='object-cover h-12 w-12 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='w-full'>
-                <div className='text-lg font-semibold'>Everest Trip 2021</div>
-                <span className='text-gray-500'>Hi Sam, Welcome</span>
-              </div>
-            </div>
-            <div className='flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400'>
-              <div className='w-1/4'>
-                <img
-                  src='https://source.unsplash.com/L2cxSuKWbpo/600x600'
-                  className='object-cover h-12 w-12 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='w-full'>
-                <div className='text-lg font-semibold'>MERN Stack</div>
-                <span className='text-gray-500'>Lusi : Thanks Everyone</span>
-              </div>
-            </div>
-            <div className='flex flex-row py-4 px-2 items-center border-b-2'>
-              <div className='w-1/4'>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-12 w-12 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='w-full'>
-                <div className='text-lg font-semibold'>
-                  Javascript Indonesia
+            {onlineUsers.map((user) => (
+              <div
+                onClick={() => setReceiverId(user.userId)}
+                key={user.userId}
+                className='flex flex-row py-4 px-2 justify-center items-center border-b-2'
+              >
+                <div className='w-1/4'>
+                  <img
+                    src='https://source.unsplash.com/_7LbC5J-jw4/600x600'
+                    className='object-cover h-12 w-12 rounded-full'
+                    alt=''
+                  />
                 </div>
-                <span className='text-gray-500'>
-                  Evan : some one can fix this
-                </span>
-              </div>
-            </div>
-            <div className='flex flex-row py-4 px-2 items-center border-b-2'>
-              <div className='w-1/4'>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-12 w-12 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='w-full'>
-                <div className='text-lg font-semibold'>
-                  Javascript Indonesia
+                <div className='w-full'>
+                  <div className='text-lg font-semibold'>{user.userId}</div>
+                  {/* <span className='text-gray-500'>Pick me at 9:00 Am</span> */}
                 </div>
-                <span className='text-gray-500'>
-                  Evan : some one can fix this
-                </span>
               </div>
-            </div>
+            ))}
 
-            <div className='flex flex-row py-4 px-2 items-center border-b-2'>
-              <div className='w-1/4'>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-12 w-12 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='w-full'>
-                <div className='text-lg font-semibold'>
-                  Javascript Indonesia
-                </div>
-                <span className='text-gray-500'>
-                  Evan : some one can fix this
-                </span>
-              </div>
-            </div>
             {/* <!-- end user list --> */}
           </div>
           {/* <!-- end chat list --> */}
           {/* <!-- message --> */}
           <div className='w-full px-5 flex flex-col justify-between'>
             <div className='flex flex-col mt-5'>
-              <div className='flex justify-end mb-4'>
-                <div className='mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white'>
-                  Welcome to group everyone !
-                </div>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-8 w-8 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='flex justify-start mb-4'>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-8 w-8 rounded-full'
-                  alt=''
-                />
-                <div className='ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white'>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Quaerat at praesentium, aut ullam delectus odio error sit rem.
-                  Architecto nulla doloribus laborum illo rem enim dolor odio
-                  saepe, consequatur quas?
-                </div>
-              </div>
-              <div className='flex justify-end mb-4'>
-                <div>
-                  <div className='mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white'>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Magnam, repudiandae.
-                  </div>
-
-                  <div className='mt-4 mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white'>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Debitis, reiciendis!
-                  </div>
-                </div>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-8 w-8 rounded-full'
-                  alt=''
-                />
-              </div>
-              <div className='flex justify-start mb-4'>
-                <img
-                  src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                  className='object-cover h-8 w-8 rounded-full'
-                  alt=''
-                />
-                <div className='ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white'>
-                  happy holiday guys!
-                </div>
-              </div>
+              {messages
+                .filter(
+                  (message) =>
+                    (message.senderId === user.uid &&
+                      message.receiverId === receiverId) ||
+                    (message.senderId === receiverId &&
+                      message.receiverId === user.uid)
+                )
+                .map((message, i) =>
+                  message.senderId === user.uid ? (
+                    <div key={i} className='flex justify-end mb-4'>
+                      <div>
+                        <div className='mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white'>
+                          {message.message}
+                        </div>
+                      </div>
+                      <img
+                        src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
+                        className='object-cover h-8 w-8 rounded-full'
+                        alt=''
+                      />
+                    </div>
+                  ) : (
+                    <div key={i} className='flex justify-start mb-4'>
+                      <img
+                        src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
+                        className='object-cover h-8 w-8 rounded-full'
+                        alt=''
+                      />
+                      <div className='ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white'>
+                        {message.message}
+                      </div>
+                    </div>
+                  )
+                )}
             </div>
             <div className='py-5'>
               <input
+                onChange={(e) => setMessage(e.target.value)}
+                value={message}
                 className='w-full bg-gray-300 py-5 px-3 rounded-xl'
                 type='text'
                 placeholder='type your message here...'
+                onKeyDown={(event) =>
+                  event.key === "Enter" ? sendMessage(message) : null
+                }
               />
+              <button onClick={sendMessage}>send</button>
             </div>
           </div>
           {/* <!-- end message --> */}
