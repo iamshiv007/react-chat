@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from "react";
 import { socket } from "../socket";
-import { ConnectionState } from "../components/ConnectionState";
+import { Link } from "react-router-dom";
 
 const Chat = ({ user }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -117,7 +117,6 @@ const Chat = ({ user }) => {
     <>
       {/* <!-- component --> */}
       {/* <!-- This is an example component --> */}
-      <ConnectionState isConnected={isConnected} />
       <div className='container mx-auto shadow-lg rounded-lg'>
         {/* <!-- headaer --> */}
         <div className='px-5 py-5 flex justify-between items-center bg-white border-b-2'>
@@ -132,7 +131,17 @@ const Chat = ({ user }) => {
             />
           </div>
           <div className='flex items-center gap-2'>
-            <p className='text-lg font-semibold'>{user.userName}</p>
+            <div className='flex flex-col'>
+              <p className='text-lg font-semibold'>{user.userName}</p>
+              <div className='text-xs flex items-center gap-1'>
+                <p>{isConnected ? "Online" : "Offline"}</p>
+                {isConnected ? (
+                  <p className='w-2 h-2 bg-green-500 rounded-full' />
+                ) : (
+                  <p className='w-2 h-2 bg-red-500 rounded-full' />
+                )}
+              </div>
+            </div>
             <img
               src={`https://api.multiavatar.com/${user.userName}.svg`}
               className='object-cover h-10 w-10 rounded-full'
@@ -144,7 +153,7 @@ const Chat = ({ user }) => {
         {/* <!-- Chatting --> */}
         <div className='flex flex-row justify-between bg-white'>
           {/* <!-- chat list --> */}
-          <div className='flex flex-col w-2/5 bo.rder-r-2 overflow-y-auto border-r-2'>
+          <div className='flex flex-col w-2/5 border-r-2 overflow-y-auto'>
             {/* <!-- search compt --> */}
             <div className='border-b-2 py-4 px-2'>
               <input
@@ -251,16 +260,20 @@ const Chat = ({ user }) => {
           {/* <!-- end message --> */}
           <div className='w-2/5 border-l-2 px-5'>
             <div className='flex flex-col'>
-              <div className='font-semibold text-xl py-4'>Mern Stack Group</div>
+              <div className='font-semibold text-xl py-4'>Public Group</div>
               <img
-                src='https://source.unsplash.com/L2cxSuKWbpo/600x600'
-                className='object-cover rounded-xl h-64'
+                src={
+                  "https://img.freepik.com/free-photo/friends-looking-each-other-holding-chat-bubble_23-2148342087.jpg?size=626&ext=jpg&ga=GA1.1.1413502914.1697328000&semt=ais"
+                }
+                className='border object-cover rounded-xl h-64'
                 alt=''
               />
-              <div className='font-semibold py-4'>Created 22 Sep 2021</div>
-              <div className='font-light'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Deserunt, perspiciatis!
+              <Link href='/' className='font-semibold py-4'>
+                Explore groups
+              </Link>
+              <div className=''>
+                Create a global or public group for asking questions, gaining
+                knowledge, and sharing your experiences to help others.
               </div>
             </div>
           </div>
