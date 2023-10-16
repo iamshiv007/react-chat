@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { socket } from "../socket";
@@ -15,7 +16,7 @@ const Chat = ({ user }) => {
       return alert("Please select a user to start chating");
     }
     setMessages([...messages, { sender: user.userName, receiver, message }]);
-    socket.emit("privateMessage", user.userName, receiver, message, () => {
+    socket.emit("send-message", user.userName, receiver, message, () => {
       setMessage("");
     });
   };
@@ -23,7 +24,7 @@ const Chat = ({ user }) => {
   useEffect(() => {
     // no-op if the socket is already connected
     socket.connect();
-    console.log("hello");
+    console.log("socket connected");
     return () => {
       socket.disconnect();
     };
@@ -32,6 +33,12 @@ const Chat = ({ user }) => {
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
+      socket.emit("new-online-user", user.userName, (error) => {
+        if (error) {
+          return alert(error);
+        }
+      });
+      console.log("connect event");
     }
 
     function onDisconnect() {
@@ -48,22 +55,24 @@ const Chat = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    socket.emit("new-user-add", user.userName);
-    socket.on("get-users", (users) => {
+    socket.on("get-online-users", (users) => {
       console.log(users);
       setOnlineUsers(users.filter((user0) => user0.userName !== user.userName));
     });
 
-    socket.on("privateMessage", (sender, message) => {
-      setMessages([...messages, { sender, receiver: user.userName, message }]);
+    socket.on("send-message", (sender, message) => {
+      setMessages((previous) => [
+        ...previous,
+        { sender, receiver: user.userName, message },
+      ]);
+      console.log(sender, message);
     });
 
     return () => {
-      socket.off("new-user-add");
-      socket.off("get-users");
-      socket.off("privateMessage");
+      socket.off("get-online-users");
+      socket.off("send-message");
     };
-  }, [user, messages]);
+  }, []);
 
   useEffect(() => {
     // Tab has focus
@@ -171,7 +180,7 @@ const Chat = ({ user }) => {
             {/* <!-- message --> */}
             {receiver ? (
               <div className='w-full h-full px-5 flex flex-col justify-between'>
-                <div className='flex flex-col mt-5'>
+                <div className='h-[55vh] flex flex-col mt-5 overflow-y-scroll'>
                   {messages
                     .filter(
                       (message) =>
