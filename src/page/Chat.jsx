@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { socket } from "../socket";
@@ -27,17 +26,13 @@ const Chat = ({ user }) => {
     console.log("socket connected");
     return () => {
       socket.disconnect();
+      console.log("socket disconnected");
     };
   }, []);
 
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
-      socket.emit("new-online-user", user.userName, (error) => {
-        if (error) {
-          return alert(error);
-        }
-      });
       console.log("connect event");
     }
 
@@ -55,6 +50,12 @@ const Chat = ({ user }) => {
   }, []);
 
   useEffect(() => {
+    socket.emit("new-online-user", user.userName, (error) => {
+      if (error) {
+        return alert(error);
+      }
+    });
+
     socket.on("get-online-users", (users) => {
       console.log(users);
       setOnlineUsers(users.filter((user0) => user0.userName !== user.userName));
@@ -71,8 +72,9 @@ const Chat = ({ user }) => {
     return () => {
       socket.off("get-online-users");
       socket.off("send-message");
+      socket.off("new-online-user");
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     // Tab has focus
