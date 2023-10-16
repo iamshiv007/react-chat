@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { socket } from "../socket";
 import { ConnectionState } from "../components/ConnectionState";
 
@@ -9,6 +9,8 @@ const Chat = ({ user }) => {
   const [receiver, setReceiver] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const chatBoxRef = useRef();
 
   const sendMessage = () => {
     if (!receiver) {
@@ -75,6 +77,18 @@ const Chat = ({ user }) => {
       socket.off("new-online-user");
     };
   }, [user]);
+
+  const scrollToBottom = () => {
+    if (chatBoxRef.current)
+      chatBoxRef.current.scrollTo({
+        top: chatBoxRef.current.scrollHeight, // Scroll to the bottom of the page
+        behavior: "smooth", // Use smooth scrolling animation
+      });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     // Tab has focus
@@ -169,20 +183,25 @@ const Chat = ({ user }) => {
           </div>
           {/* <!-- end chat list --> */}
           <div className='w-full flex flex-col'>
-            {receiver && (
-              <div className='px-5 py-2 flex items-center gap-2 border-b-2'>
-                <img
-                  src={`https://api.multiavatar.com/${receiver}.svg`}
-                  className='object-cover h-10 w-10 rounded-full'
-                  alt=''
-                />
-                <p className='text-lg font-semibold'>{receiver}</p>
-              </div>
-            )}
+            {onlineUsers.find((user) => user.userName === receiver) &&
+              receiver && (
+                <div className='px-5 py-2 flex items-center gap-2 border-b-2'>
+                  <img
+                    src={`https://api.multiavatar.com/${receiver}.svg`}
+                    className='object-cover h-10 w-10 rounded-full'
+                    alt=''
+                  />
+                  <p className='text-lg font-semibold'>{receiver}</p>
+                </div>
+              )}
             {/* <!-- message --> */}
-            {receiver ? (
+            {onlineUsers.find((user) => user.userName === receiver) &&
+            receiver ? (
               <div className='w-full h-full px-5 flex flex-col justify-between'>
-                <div className='h-[55vh] flex flex-col mt-5 overflow-y-scroll'>
+                <div
+                  ref={chatBoxRef}
+                  className='h-[55vh] flex flex-col mt-5 overflow-y-scroll'
+                >
                   {messages
                     .filter(
                       (message) =>
