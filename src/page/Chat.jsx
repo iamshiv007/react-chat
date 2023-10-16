@@ -151,7 +151,7 @@ const Chat = ({ user }) => {
                 </div>
               ))
             ) : (
-              <p className='py-4 flex justify-center'>Nobody online</p>
+              <p className='py-4 flex justify-center'>Nobody is online</p>
             )}
 
             {/* <!-- end user list --> */}
@@ -161,7 +161,7 @@ const Chat = ({ user }) => {
             {receiver && (
               <div className='px-5 py-2 flex items-center gap-2 border-b-2'>
                 <img
-                  src={`https://api.multiavatar.com/${user.userName}.svg`}
+                  src={`https://api.multiavatar.com/${receiver}.svg`}
                   className='object-cover h-10 w-10 rounded-full'
                   alt=''
                 />
@@ -188,19 +188,9 @@ const Chat = ({ user }) => {
                               {message.message}
                             </div>
                           </div>
-                          <img
-                            src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                            className='object-cover h-8 w-8 rounded-full'
-                            alt=''
-                          />
                         </div>
                       ) : (
                         <div key={i} className='flex justify-start mb-4'>
-                          <img
-                            src='https://source.unsplash.com/vpOeXr5wmR4/600x600'
-                            className='object-cover h-8 w-8 rounded-full'
-                            alt=''
-                          />
                           <div className='ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white'>
                             {message.message}
                           </div>
