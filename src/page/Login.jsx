@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const Login = () => {
 
   const onLogin = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(login({ userName, password }));
   };
 
   useEffect(() => {
@@ -38,11 +38,9 @@ const Login = () => {
           <div className='absolute bg-black opacity-60 inset-0 z-0'></div>
           <div className='w-full px-24 z-10'>
             <h1 className='text-5xl font-bold text-left tracking-wide'>
-              Chat freely
+              Chat secure
             </h1>
-            <p className='text-3xl my-4'>
-              Share your knowledge and experiences.
-            </p>
+            <p className='text-3xl my-4'>Your chat not stored in database</p>
           </div>
         </div>
         <div
@@ -59,7 +57,7 @@ const Login = () => {
             <div className='absolute bg-black opacity-60 inset-0 z-0'></div>
           </div>
           <div className='w-full py-6 z-20'>
-            <h1 className='text-4xl font-bold'>MERN CHAT</h1>
+            <h1 className='text-4xl font-bold'>React Dating App</h1>
 
             <form
               onSubmit={onLogin}
@@ -68,11 +66,11 @@ const Login = () => {
             >
               <div className='pb-2 pt-4'>
                 <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  type='email'
-                  name='email'
-                  id='email'
-                  placeholder='Email'
+                  onChange={(e) => setUserName(e.target.value)}
+                  type='text'
+                  name='userName'
+                  id='userName'
+                  placeholder='User Name'
                   required
                   className='block w-full p-4 text-lg rounded-sm bg-black'
                 />

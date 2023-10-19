@@ -6,7 +6,8 @@ import { signup } from "../redux/actions/userActions";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [gender, setGender] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,7 +18,7 @@ const Signup = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(signup({ userName, email, password }));
+    dispatch(signup({ fullName, gender, userName, password }));
   };
 
   useEffect(() => {
@@ -41,11 +42,9 @@ const Signup = () => {
           <div className='absolute bg-black opacity-60 inset-0 z-0'></div>
           <div className='w-full px-24 z-10'>
             <h1 className='text-5xl font-bold text-left tracking-wide'>
-              Chat freely
+              Chat secure
             </h1>
-            <p className='text-3xl my-4'>
-              Share your knowledge and experiences.
-            </p>
+            <p className='text-3xl my-4'>Your chat not stored in database</p>
           </div>
         </div>
         <div
@@ -62,7 +61,7 @@ const Signup = () => {
             <div className='absolute bg-black opacity-60 inset-0 z-0'></div>
           </div>
           <div className='w-full py-6 z-20'>
-            <h1 className='text-4xl font-bold'>MERN CHAT</h1>
+            <h1 className='text-4xl font-bold'>React dating app</h1>
 
             <form
               onSubmit={onSubmit}
@@ -71,22 +70,38 @@ const Signup = () => {
             >
               <div className='pb-2 pt-4'>
                 <input
-                  onChange={(e) => setUserName(e.target.value)}
+                  onChange={(e) => setFullName(e.target.value)}
                   type='text'
-                  name='userName'
-                  id='userName'
-                  placeholder='User Name'
+                  name='fullName'
+                  id='fullName'
+                  placeholder='Full Name'
                   required
                   className='block w-full p-4 text-lg rounded-sm bg-black'
                 />
               </div>
               <div className='pb-2 pt-4'>
+                <select
+                  onChange={(e) => setGender(e.target.value)}
+                  type='text'
+                  name='gender'
+                  id='gender'
+                  placeholder='Gender'
+                  required
+                  className='block w-full p-4 text-lg rounded-sm bg-black'
+                >
+                  <option value=''>Gender</option>
+                  <option value='male'>Male</option>
+                  <option value='female'>Female</option>
+                  <option value='other'>Other</option>
+                </select>
+              </div>
+              <div className='pb-2 pt-4'>
                 <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  type='email'
-                  name='email'
-                  id='email'
-                  placeholder='Email'
+                  onChange={(e) => setUserName(e.target.value)}
+                  type='text'
+                  name='userName'
+                  id='userName'
+                  placeholder='User Name'
                   required
                   className='block w-full p-4 text-lg rounded-sm bg-black'
                 />

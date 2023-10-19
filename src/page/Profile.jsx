@@ -96,7 +96,7 @@ const Profile = ({ user }) => {
       {logoutLoading && <SubmitLoader />}
       <div>
         {/* eslint-disable-next-line react/prop-types */}
-        <p>{user?.email}</p>
+        <p>Name: {user?.fullName}</p>
         <p>Your IP Address: {ipInfo?.ip}</p>
         <p>
           Your Location: {ipInfo?.city}, {ipInfo?.region},{" "}
