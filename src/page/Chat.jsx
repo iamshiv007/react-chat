@@ -132,7 +132,7 @@ const Chat = ({ user }) => {
           </div>
           <div className='flex items-center gap-2'>
             <div className='flex flex-col'>
-              <p className='text-lg font-semibold'>{user.userName}</p>
+              <p className='text-lg font-semibold'>{user.fullName}</p>
               <div className='text-xs flex items-center gap-1'>
                 <p>{isConnected ? "Online" : "Offline"}</p>
                 {isConnected ? (
