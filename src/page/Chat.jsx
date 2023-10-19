@@ -142,11 +142,13 @@ const Chat = ({ user }) => {
                 )}
               </div>
             </div>
-            <img
-              src={`https://api.multiavatar.com/${user.userName}.svg`}
-              className='object-cover h-10 w-10 rounded-full'
-              alt=''
-            />
+            <Link className="cursor-pointer" to='/profile'>
+              <img
+                src={`https://api.multiavatar.com/${user.userName}.svg`}
+                className='object-cover h-10 w-10 rounded-full'
+                alt=''
+              />
+            </Link>
           </div>
         </div>
         {/* <!-- end header --> */}
