@@ -8,9 +8,7 @@ import { getUserDetails } from "../redux/actions/userActions";
 const ProtectedRoute = ({ Component }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, userLoading, isAuthenticated } = useSelector(
-    (state) => state.user
-  );
+  const { userLoading, isAuthenticated } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -23,11 +21,7 @@ const ProtectedRoute = ({ Component }) => {
     }
   });
 
-  return userLoading || !isAuthenticated ? (
-    <Loader />
-  ) : (
-    <Component user={user} />
-  );
+  return userLoading || !isAuthenticated ? <Loader /> : <Component />;
 };
 
 export default ProtectedRoute;
