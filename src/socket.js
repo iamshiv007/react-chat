@@ -5,7 +5,10 @@ import { useChat } from './context/ChatContext';
 
 const URL = import.meta.env.VITE_BASE_URL
 
-export const socket = io(URL, { autoConnect: false });
+export const socket = io(URL, {
+    autoConnect: false,
+    reconnectionAttempts: 3
+});
 
 const Socket = () => {
     const { setIsConnected, setMessages, setOnlineUsers } = useChat()
