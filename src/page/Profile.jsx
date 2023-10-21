@@ -18,12 +18,13 @@ const Profile = ({ user }) => {
   const handleLogout = () => {
     dispatch(logout());
   };
+  const url = import.meta.env.VITE_BASE_URL;
 
   const fetchIpApi = async () => {
     await axios
-      .get("https://ipapi.co/json/")
+      .get(`${url}/api/ip/api`)
       .then((response) => {
-        setIpInfo(response.data);
+        setIpInfo(response.data.info);
       })
       .catch((error) => {
         console.error("Error fetching IP info:", error);

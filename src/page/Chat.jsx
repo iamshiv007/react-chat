@@ -5,10 +5,12 @@ import UserList from "../components/chatComponents/UserList";
 import ChatBox from "../components/chatComponents/ChatBox";
 import AdBox from "../components/chatComponents/AdBox";
 import Socket from "../socket";
+// import NewVisitor from "../components/chatComponents/NewVisitor";
 
 const Chat = () => {
   return (
     <>
+      {/* <NewVisitor /> */}
       <Socket />
       <div className='min-h-[100vh] flex justify-center items-center'>
         <div className='shadow-lg rounded-lg'>
