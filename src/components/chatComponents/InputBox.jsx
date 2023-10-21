@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import { useSelector } from "react-redux";
 import { socket } from "../../socket";
+import { BsSendFill } from "react-icons/bs";
 
 const InputBox = () => {
   const [message, setMessage] = useState("");
@@ -22,18 +23,23 @@ const InputBox = () => {
   };
 
   return (
-    <div className='py-5'>
+    <div className='flex py-5'>
       <input
         onChange={(e) => setMessage(e.target.value)}
         value={message}
-        className='w-full bg-gray-300 py-5 px-3 rounded-xl'
+        className='w-full bg-gray-300 py-5 px-3 rounded-tl-xl rounded-bl-xl outline-none'
         type='text'
         placeholder='type your message here...'
         onKeyDown={(event) =>
           event.key === "Enter" ? sendMessage(message) : null
         }
       />
-      <button onClick={sendMessage}>send</button>
+      <button
+        className='px-4 bg-gray-300 rounded-tr-xl rounded-br-xl'
+        onClick={sendMessage}
+      >
+        <BsSendFill size={22} />
+      </button>
     </div>
   );
 };

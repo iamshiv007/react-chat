@@ -10,7 +10,7 @@ export const newMessage = (formData) => async (dispatch) => {
 
     try {
         const { data } = await axios.post(
-            `${url}/message/new`, formData
+            `${url}/api/message/new`, formData
         );
 
         dispatch(newMessageSuccess(data));

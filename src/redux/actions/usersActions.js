@@ -9,7 +9,7 @@ export const getAllUsers = () => async (dispatch) => {
 
     try {
         const { data } = await axios.get(
-            `${url}/user/all`
+            `${url}/api/user/all`
         );
 
         dispatch(allUsersSuccess(data));

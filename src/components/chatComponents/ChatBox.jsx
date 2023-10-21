@@ -7,8 +7,9 @@ import SelectedUser from "./SelectedUser";
 const ChatBox = () => {
   const chatBoxRef = useRef();
 
-  const { onlineUsers, receiver, messages } = useChat();
+  const { receiver, messages } = useChat();
   const { user } = useSelector((state) => state.user);
+  const { users } = useSelector((state) => state.users);
 
   const scrollToBottom = () => {
     if (chatBoxRef.current)
@@ -26,7 +27,7 @@ const ChatBox = () => {
     <>
       <div className='w-full flex flex-col'>
         <SelectedUser />
-        {onlineUsers?.find((user) => user.userName === receiver) && receiver ? (
+        {users?.find((user) => user.userName === receiver) && receiver ? (
           <div className='w-full h-full px-5 flex flex-col justify-between'>
             <div
               ref={chatBoxRef}
