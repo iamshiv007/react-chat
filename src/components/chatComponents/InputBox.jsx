@@ -21,11 +21,23 @@ const InputBox = () => {
 
     setMessages((previous) => [
       ...previous,
-      { sender: user.userName, receiver, message },
+      {
+        sender: user.userName,
+        receiver,
+        message,
+        createdAt: new Date(Date.now()),
+      },
     ]);
-    socket.emit("send-message", user.userName, receiver, message, () => {
-      setMessage("");
-    });
+    socket.emit(
+      "send-message",
+      user.userName,
+      receiver,
+      message,
+      new Date(Date.now()),
+      () => {
+        setMessage("");
+      }
+    );
   };
 
   return (

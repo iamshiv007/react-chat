@@ -3,7 +3,7 @@ import { useChat } from "../../context/ChatContext";
 import { useSelector } from "react-redux";
 
 const SelectedUser = () => {
-  const { receiver } = useChat();
+  const { onlineUsers, receiver } = useChat();
 
   const { users } = useSelector((state) => state.users);
 
@@ -16,7 +16,23 @@ const SelectedUser = () => {
             className='object-cover h-10 w-10 rounded-full'
             alt=''
           />
-          <p className='text-lg font-semibold'>{receiver}</p>
+          <div className='text-lg font-semibold'>
+            <p>
+              {users.filter((user) => user.userName === receiver)[0]?.fullName}
+            </p>
+            <div className='text-xs flex items-center gap-1'>
+              <p>
+                {onlineUsers.find((user) => user.userName === receiver)
+                  ? "Online"
+                  : "Offline"}
+              </p>
+              {onlineUsers.find((user) => user.userName === receiver) ? (
+                <p className='w-2 h-2 bg-green-500 rounded-full' />
+              ) : (
+                <p className='w-2 h-2 bg-red-500 rounded-full' />
+              )}
+            </div>
+          </div>
         </div>
       )}
       {/* <!-- message --> */}

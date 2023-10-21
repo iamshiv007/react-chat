@@ -54,10 +54,10 @@ const Socket = () => {
             setOnlineUsers(users.filter((user0) => user0.userName !== user.userName));
         });
 
-        socket.on("send-message", (sender, message) => {
+        socket.on("send-message", (sender, message, createdAt) => {
             setMessages((previous) => [
                 ...previous,
-                { sender, receiver: user.userName, message },
+                { sender, receiver: user.userName, message, createdAt },
             ]);
             console.log(sender, message);
         });

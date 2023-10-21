@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { newMessageFailed, newMessageRequest, newMessageSuccess } from "../reducers/messageReducer";
 import { twoMessagesFailed, twoMessagesRequest, twoMessagesSuccess } from "../reducers/twoMessagesReducer";
+import { allChatFailed, allChatRequest, allChatSuccess } from "../reducers/allChatReducer";
 
 const url = import.meta.env.VITE_BASE_URL
 
@@ -37,6 +38,21 @@ export const getTwoMessages = (formData) => async (dispatch) => {
     } catch (error) {
         dispatch(twoMessagesFailed(
             error?.response?.data.message ||
+            error.message ||
+            "Something went wrong !"))
+    }
+}
+
+// 3. Get All Chat
+export const getAllChat = (sender) => async (dispatch) => {
+    dispatch(allChatRequest())
+
+    try {
+        const { data } = await axios.get(`${url}/api/message/all/${sender}`)
+
+        dispatch(allChatSuccess(data))
+    } catch (error) {
+        dispatch(allChatFailed(error?.response?.data.message ||
             error.message ||
             "Something went wrong !"))
     }
