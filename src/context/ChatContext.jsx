@@ -1,5 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { getTwoMessages } from "../redux/actions/messageAction";
+import { clearErrors } from "../redux/reducers/twoMessagesReducer";
 export const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children }) => {
@@ -7,6 +10,29 @@ export const ChatContextProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [receiver, setReceiver] = useState();
+
+  const { user } = useSelector((state) => state.user);
+  const { messages: twoMessages, error } = useSelector(
+    (state) => state.messages
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (receiver) {
+      dispatch(getTwoMessages({ sender: user.userName, receiver }));
+    }
+  }, [receiver, dispatch, user]);
+
+  useEffect(() => {
+    setMessages(twoMessages);
+  }, [twoMessages]);
+
+  useEffect(() => {
+    if (error) {
+      alert(error);
+      dispatch(clearErrors());
+    }
+  }, [error, dispatch]);
 
   return (
     <>

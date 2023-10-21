@@ -1,6 +1,7 @@
 import axios from "axios";
 
-import { newMessageFailed, newMessageRequest, newMessageSuccess } from "../reducers/mailReducer";
+import { newMessageFailed, newMessageRequest, newMessageSuccess } from "../reducers/messageReducer";
+import { twoMessagesFailed, twoMessagesRequest, twoMessagesSuccess } from "../reducers/twoMessagesReducer";
 
 const url = import.meta.env.VITE_BASE_URL
 
@@ -24,3 +25,19 @@ export const newMessage = (formData) => async (dispatch) => {
         );
     }
 };
+
+// 2. Get two messages
+export const getTwoMessages = (formData) => async (dispatch) => {
+    dispatch(twoMessagesRequest())
+    try {
+        const { data } = await axios.post(`${url}/api/message/two`, formData)
+
+        dispatch(twoMessagesSuccess(data))
+
+    } catch (error) {
+        dispatch(twoMessagesFailed(
+            error?.response?.data.message ||
+            error.message ||
+            "Something went wrong !"))
+    }
+}

@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import { useChat } from "../../context/ChatContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socket";
 import { BsSendFill } from "react-icons/bs";
+import { newMessage } from "../../redux/actions/messageAction";
 
 const InputBox = () => {
   const [message, setMessage] = useState("");
   const { receiver, setMessages } = useChat();
   const { user } = useSelector((state) => state.user);
 
+  const dispatch = useDispatch();
+
   const sendMessage = () => {
     if (!receiver) {
       return alert("Please select a user to start chating");
     }
+
+    dispatch(newMessage({ sender: user.userName, receiver, message }));
+
     setMessages((previous) => [
       ...previous,
       { sender: user.userName, receiver, message },
