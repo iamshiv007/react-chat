@@ -4,9 +4,8 @@ import React from "react";
 const Loader = ({ height }) => {
   return (
     <div
-      className={`${
-        height ? `min-h-[${height}]` : "min-h-screen"
-      } flex justify-center items-center`}
+      className={`flex justify-center items-center`}
+      style={height ? { minHeight: height } : { minHeight: "100vh" }}
     >
       <svg
         className='animate-spin'

@@ -35,8 +35,9 @@ const ChatBox = () => {
               ref={chatBoxRef}
               className='h-[55vh] flex flex-col mt-5 overflow-y-scroll'
             >
-              {loading && <Loader height={"80vh"} />}
-              {messages.length !== 0 ? (
+              {loading ? (
+                <Loader height={"50vh"} />
+              ) : messages.length !== 0 ? (
                 messages.map((message, i) => {
                   const originalTimestamp = message.createdAt;
                   const date = new Date(originalTimestamp);
@@ -48,7 +49,6 @@ const ChatBox = () => {
                   const formattedHours = hours % 12 || 12; // Convert to 12-hour format
 
                   const formattedTime = `${formattedHours}:${minutes} ${period}`;
-                  console.log(formattedTime);
                   return message.sender === user.userName ? (
                     <div key={i} className='flex justify-end mb-4'>
                       <div>
