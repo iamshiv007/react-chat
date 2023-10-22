@@ -49,12 +49,12 @@ const InputBox = () => {
         type='text'
         placeholder='type your message here...'
         onKeyDown={(event) =>
-          event.key === "Enter" ? sendMessage(message) : null
+          event.key === "Enter" && message.trim() ? sendMessage(message) : null
         }
       />
       <button
         className='px-4 bg-gray-300 rounded-tr-xl rounded-br-xl'
-        onClick={sendMessage}
+        onClick={message.trim() ? sendMessage : null}
       >
         <BsSendFill size={22} />
       </button>
